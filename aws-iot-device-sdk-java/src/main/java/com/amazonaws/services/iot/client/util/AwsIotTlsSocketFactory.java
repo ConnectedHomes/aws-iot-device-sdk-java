@@ -120,8 +120,7 @@ public class AwsIotTlsSocketFactory extends SSLSocketFactory {
             ((SSLSocket) socket).setEnabledProtocols(new String[] { TLS_V_1_2 });
 
             // Ensure hostname is validated againt the CN in the certificate
-            SSLParameters sslParams = new SSLParameters();
-            sslParams.setEndpointIdentificationAlgorithm("HTTPS");
+            SSLParameters sslParams = SSLContext.getDefault().getDefaultSSLParameters();
             ((SSLSocket) socket).setSSLParameters(sslParams);
         }
         return socket;
