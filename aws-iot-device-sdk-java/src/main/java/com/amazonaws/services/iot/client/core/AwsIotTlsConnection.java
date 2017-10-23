@@ -27,9 +27,9 @@ import com.amazonaws.services.iot.client.util.AwsIotTlsSocketFactory;
  */
 public class AwsIotTlsConnection extends AwsIotMqttConnection {
 
-    public AwsIotTlsConnection(AbstractAwsIotClient client, KeyStore keyStore, String keyPassword)
+    public AwsIotTlsConnection(AbstractAwsIotClient client, KeyStore keyStore, String keyPassword, KeyStore root)
             throws AWSIotException {
-        super(client, new AwsIotTlsSocketFactory(keyStore, keyPassword), "ssl://" + client.getClientEndpoint() + ":8883");
+        super(client, new AwsIotTlsSocketFactory(keyStore, keyPassword, root), "ssl://" + client.getClientEndpoint() + ":8883");
     }
 
 }

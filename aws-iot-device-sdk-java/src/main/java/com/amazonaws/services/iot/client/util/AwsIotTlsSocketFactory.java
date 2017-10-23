@@ -26,11 +26,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.*;
 
 import com.amazonaws.services.iot.client.AWSIotException;
 
@@ -47,13 +43,20 @@ public class AwsIotTlsSocketFactory extends SSLSocketFactory {
      */
     private final SSLSocketFactory sslSocketFactory;
 
-    public AwsIotTlsSocketFactory(KeyStore keyStore, String keyPassword) throws AWSIotException {
+    public AwsIotTlsSocketFactory(KeyStore keyStore, String keyPassword, KeyStore root) throws AWSIotException {
         try {
             SSLContext context = SSLContext.getInstance(TLS_V_1_2);
 
             KeyManagerFactory managerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             managerFactory.init(keyStore, keyPassword.toCharArray());
-            context.init(managerFactory.getKeyManagers(), null, null);
+            TrustManager[] trustManagers = null;
+            if (root != null) {
+                TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
+                        TrustManagerFactory.getDefaultAlgorithm());
+                trustManagerFactory.init(root);
+                trustManagers = trustManagerFactory.getTrustManagers();
+            }
+            context.init(managerFactory.getKeyManagers(), trustManagers, null);
 
             sslSocketFactory = context.getSocketFactory();
         } catch (NoSuchAlgorithmException | KeyStoreException | UnrecoverableKeyException | KeyManagementException e) {

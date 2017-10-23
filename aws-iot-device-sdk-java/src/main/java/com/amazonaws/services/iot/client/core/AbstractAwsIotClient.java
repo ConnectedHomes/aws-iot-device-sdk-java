@@ -66,13 +66,13 @@ public abstract class AbstractAwsIotClient implements AwsIotConnectionCallback {
 
     private ScheduledExecutorService executionService;
 
-    protected AbstractAwsIotClient(String clientEndpoint, String clientId, KeyStore keyStore, String keyPassword) {
+    protected AbstractAwsIotClient(String clientEndpoint, String clientId, KeyStore keyStore, String keyPassword, KeyStore root) {
         this.clientEndpoint = clientEndpoint;
         this.clientId = clientId;
         this.connectionType = AwsIotConnectionType.MQTT_OVER_TLS;
 
         try {
-            connection = new AwsIotTlsConnection(this, keyStore, keyPassword);
+            connection = new AwsIotTlsConnection(this, keyStore, keyPassword, root);
         } catch (AWSIotException e) {
             throw new AwsIotRuntimeException(e);
         }
